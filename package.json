@@ -2,9 +2,9 @@
   "name": "grafql",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "devStart": "nodeman server.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/AsmolovskiyAndrey/GrafQL/issues"
   },
-  "homepage": "https://github.com/AsmolovskiyAndrey/GrafQL#readme"
+  "homepage": "https://github.com/AsmolovskiyAndrey/GrafQL#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-graphql": "^0.12.0",
+    "graphql": "^14.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
 }
