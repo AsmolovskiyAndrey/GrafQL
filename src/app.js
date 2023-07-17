@@ -1,13 +1,13 @@
-require('dotenv').config()
-const { InMemoryCache } = require('apollo-cache-inmemory');
-const { HttpLink } = require('apollo-link-http');
-const { ApolloLink } = require('apollo-link');
-const { setContext } = require('apollo-link-context');
-const gql = require("graphql-tag");
-const fetch = require('node-fetch');
-const express = require("express");
-// const { ApolloClient } = 'apollo-client';
-const pkg = 'apollo-client';
+import {} from 'dotenv/config';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http';
+import { ApolloLink } from 'apollo-link';
+import { setContext } from 'apollo-link-context';
+import gql from "graphql-tag";
+import fetch from 'node-fetch';
+import express from "express";
+// import { ApolloClient } from 'apollo-client';
+import pkg from 'apollo-client';
 
 const { ApolloClient } = pkg;
 const app = express();
