@@ -1,0 +1,22 @@
+@clientID=b00ddeea-8041-4f9d-88ea-5dafe6b62cd1
+@tenantID=87cd3c4f-1e0a-4350-889e-3969cd4616c9
+@clientSecret=I1Y8Q~Su7ke6BoAXbfLLZCBAU4jzNKU03VBg~byB
+@resource=1484212f-edce-452a-aae9-46141bae91af
+@hostname=https://graphql-sandbox-dds.rnv-online.de
+
+
+###
+# @name getAccessTokenForClient
+POST https://login.microsoftonline.com/{{tenantID}}/oauth2/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=client_credentials
+&client_id={{clientID}}
+&client_secret={{clientSecret}}
+&resource={{resource}}
+
+###
+POST {{hostname}}/
+Authorization: Bearer {{getAccessTokenForClient.response.body.$.access_token}}
+
+{"query": "{stations {totalCount cursor elements { ... on Station {hafasID globalID longName id }} }}"}
