@@ -4,16 +4,15 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node ./server.js",
-    "devStart": "nodemon ./server.js"
+    "start": "node ./src/index.js",
+    "devStart": "nodemon ./src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2",
-    "express-graphql": "^0.12.0",
-    "graphql": "^15.3.0"
+    "apollo-server": "^2.26.1",
+    "graphql": "^14.6.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
