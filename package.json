@@ -1,26 +1,35 @@
 {
-  "name": "grafql",
+  "name": "graphql_aufgabe",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "devStart": "nodemon server.js"
+    "start": "node ./app.js",
+    "devStart": "nodemon ./app.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/AsmolovskiyAndrey/GrafQL.git"
-  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/AsmolovskiyAndrey/GrafQL/issues"
-  },
-  "homepage": "https://github.com/AsmolovskiyAndrey/GrafQL#readme",
   "dependencies": {
+    "@apollo/client": "^3.7.17",
+    "@apollo/server": "^4.7.5",
+    "apollo-cache-inmemory": "^1.6.6",
+    "apollo-client": "^2.6.10",
+    "apollo-link": "^1.2.14",
+    "apollo-link-context": "^1.0.20",
+    "apollo-link-http": "^1.5.17",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-graphql": "^0.12.0",
     "graphql": "^14.7.0",
-    "lodash": "^4.17.21"
+    "graphql-tag": "^2.12.6",
+    "jsonwebtoken": "^9.0.1",
+    "lodash": "^4.17.21",
+    "mongodb": "^5.7.0",
+    "mongoose": "^7.3.2",
+    "node-fetch": "^3.3.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
