@@ -11,6 +11,11 @@ const schema = buildSchema(`
     quoteOfTheDay: String
     random: Float!
     user(name: String = "Test name"): User
+    getMessage: String
+  }
+
+  type Mutation {
+    setMessage(message: String): String
   }
 
   type User {
@@ -27,6 +32,8 @@ class User {
     return Math.floor(Math.random() * 100)
   }
 }
+
+const fakeDatabase = {};
 
 // The root provides a resolver function for each API endpoint
 const root = {
@@ -52,7 +59,16 @@ const root = {
     return Math.random()
   },
 
-  user: (args) => new User(args.name)
+  user: (args) => new User(args.name),
+  
+  setMessage: ({ message }) => {
+    fakeDatabase.message = message
+    return message
+  },
+  getMessage: () => {
+    return fakeDatabase.message
+  },
+
 }
 
 const app = express()
