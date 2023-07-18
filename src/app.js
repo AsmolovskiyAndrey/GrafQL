@@ -5,21 +5,25 @@ import {ApolloLink} from "apollo-link";
 import {setContext} from "apollo-link-context";
 import gql from "graphql-tag";
 import fetch from "node-fetch";
-import express from "express";
-// import { ApolloClient } from 'apollo-client';
+import { ApolloServer } from '@apollo/server';
+import { startStandaloneServer } from '@apollo/server/standalone';
 import pkg from "apollo-client";
 
 const {ApolloClient} = pkg;
-const app = express();
 
 const CLIENT_ID = process.env.clientID;
 const tenantID = process.env.tenantID;
 const CLIENT_SECRET = process.env.clientSecret;
 const RESOURCE_ID = process.env.resource;
 const HOSTNAME = process.env.hostname;
-const CLIENT_API_URL = process.env.client_api_url;
-
 const OAUTH_URL = `https://login.microsoftonline.com/{${tenantID}}/oauth2/token`;
+
+const typeDefs = `#graphql
+  type Query {
+    token: String
+    stationWithId: String
+  }
+`;
 
 const accessToken = async () => {
     const promise = new Promise(async (resolve, reject) => {
@@ -64,8 +68,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-client
-    .query({
+const getStationNotWarAway = client.query({
         query: gql`
         query {
             stations(first: 3, lat: 49.483076, long: 8.468409, distance: 0.5) {
@@ -80,11 +83,10 @@ client
             }
         }
         `,
-    })
-    .then((result) => console.log(result["data"]));
+})
+.then((result) => console.log(result["data"]));
 
-client
-    .query({
+const getStationWithId = client.query({
         query: gql`
         query {
             station(id: "2471") {
@@ -95,16 +97,25 @@ client
             }
         }
         `,
-    })
-    .then((result) => console.log(result["data"]));
+})
+.then((result) => console.log(result["data"]));
 
-app.get("/getAccessTokenForClient", async (req, res) => {
-    const tokenAccess = await accessToken();
-    res.json(tokenAccess);
-});
+const resolvers = {
+    Query: {
+        token: async () => {
+            const tokenAccess = await accessToken();
+            return tokenAccess;
+        },
+        stationWithId: () => {
+            return 'funktioniert, oder ?'
+        }
+    },
+    };
 
-app.listen(3000, (err) => {
-    if (err) console.error("Error at server launch:", err);
-
-    console.log("Server running. Use our API on port: 3000");
-});
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    });
+    
+const { url } = await startStandaloneServer(server);
+console.log(`🚀 Server ready at ${url}`);
