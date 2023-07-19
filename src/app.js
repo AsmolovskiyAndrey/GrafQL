@@ -1,4 +1,4 @@
-import {} from "dotenv/config";
+import {} from 'dotenv/config'
 import {InMemoryCache} from "apollo-cache-inmemory";
 import {HttpLink} from "apollo-link-http";
 import {ApolloLink} from "apollo-link";
@@ -19,11 +19,23 @@ const HOSTNAME = process.env.hostname;
 const OAUTH_URL = `https://login.microsoftonline.com/{${tenantID}}/oauth2/token`;
 
 const typeDefs = `#graphql
-  type Query {
+    type Query {
     token: String
     stationWithId: String
-  }
+    }
 `;
+
+//-----
+// stationWithId: {
+//     station: {
+//         hafasID: String,
+//         longName: String,
+//         shortName: String,
+//         name: String,
+//         __typename: String,
+//     }
+// }
+//------
 
 const accessToken = async () => {
     const promise = new Promise(async (resolve, reject) => {
@@ -68,7 +80,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const getStationNotWarAway = client.query({
+const getStationNotWarAway = () => client.query({
         query: gql`
         query {
             stations(first: 3, lat: 49.483076, long: 8.468409, distance: 0.5) {
@@ -83,22 +95,19 @@ const getStationNotWarAway = client.query({
             }
         }
         `,
-})
-.then((result) => console.log(result["data"]));
+}).then((result) => (result["data"]));
 
-const getStationWithId = client.query({
-        query: gql`
+const getStationWithId = () => client.query({
+    query: gql`
         query {
-            station(id: "2471") {
-            hafasID
-            longName
-            shortName
-            name
-            }
-        }
-        `,
-})
-.then((result) => console.log(result["data"]));
+            station(id:"2471") {
+                hafasID
+                longName
+                shortName
+                name
+        } }
+    `,
+}).then(result => (result["data"]));
 
 const resolvers = {
     Query: {
@@ -106,8 +115,10 @@ const resolvers = {
             const tokenAccess = await accessToken();
             return tokenAccess;
         },
-        stationWithId: () => {
-            return 'funktioniert, oder ?'
+        stationWithId: async () => {
+            const stationId = await getStationWithId();
+            console.log(stationId);
+            return 'funktioniren'
         }
     },
     };
