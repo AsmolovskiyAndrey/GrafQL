@@ -21,7 +21,14 @@ const OAUTH_URL = `https://login.microsoftonline.com/{${tenantID}}/oauth2/token`
 const typeDefs = `#graphql
     type Query {
     token: String
-    stationWithId: String
+    station: [Link]
+    }
+
+    type Link {
+        hafasID: String,
+        longName: String,
+        shortName: String,
+        name: String,
     }
 `;
 
@@ -58,9 +65,9 @@ const accessToken = async () => {
 };
 
 const httpLink = new HttpLink({
-  uri: HOSTNAME,
-  credentials: "same-origin",
-  fetch: fetch,
+    uri: HOSTNAME,
+    credentials: "same-origin",
+    fetch: fetch,
 });
 
 const authMiddleware = setContext(
@@ -115,11 +122,26 @@ const resolvers = {
             const tokenAccess = await accessToken();
             return tokenAccess;
         },
-        stationWithId: async () => {
-            const stationId = await getStationWithId();
-            console.log(stationId);
-            return 'funktioniren'
+        station: async () => {
+            const stationId = await Object(getStationWithId());
+            const myArray = [];
+            myArray.push(stationId)
+            console.log(myArray);
+            return myArray
+
+            // const meinResolve = [{
+            //     station: {
+            //         hafasID: '2471',
+            //         longName: 'Universität',
+            //         shortName: 'MIUN',
+            //         name: 'Universität',
+            //         __typename: 'Station'
+            //     }
+            // }];
+            // console.log(meinResolve[0]);
+            // return meinResolve[0]
         }
+        
     },
     };
 
