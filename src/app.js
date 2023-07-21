@@ -79,20 +79,20 @@ const httpLink = new HttpLink({
 });
 
 const authMiddleware = setContext(
-  (request) =>
-    new Promise(async (resolve, reject) => {
-      const token = await accessToken();
-      resolve({
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      });
+    (request) =>
+        new Promise(async (resolve, reject) => {
+        const token = await accessToken();
+        resolve({
+            headers: {
+            authorization: `Bearer ${token}`,
+            },
+        });
     })
 );
 
 const client = new ApolloClient({
-  link: ApolloLink.from([authMiddleware, httpLink]),
-  cache: new InMemoryCache(),
+    link: ApolloLink.from([authMiddleware, httpLink]),
+    cache: new InMemoryCache(),
 });
 
 const getStationNotWarAway = () => client.query({
