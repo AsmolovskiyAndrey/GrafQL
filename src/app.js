@@ -1,4 +1,3 @@
-// import {} from 'dotenv/config'
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -113,17 +112,17 @@ const getStationNotWarAway = () => client.query({
         `,
 }).then((result) => (result["data"]));
 
-const getStationWithId = (myId) => client.query({
+const getStationWithId = (hafasID) => client.query({
     query: gql`
         query {
-            station(id: "2474") {
+            station(id: "${hafasID}") {
                 hafasID
                 longName
                 shortName
                 name
         } }
     `,
-}).then(result => result["data"]).then(console.log(myId));
+}).then(result => result["data"]);
 
 const resolvers = {
     Query: {
@@ -134,7 +133,7 @@ const resolvers = {
         station: async (parent, args) => {
             const stationId = await Object(getStationWithId(args.id));
             // console.log(args.id);
-            console.log(stationId.station);
+            // console.log(stationId.station);
             return stationId.station
         },
         stations: async () => {
