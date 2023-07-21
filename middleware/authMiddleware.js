@@ -1,4 +1,17 @@
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import {setContext} from "apollo-link-context";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const envPath = path.resolve(__dirname, '../.env');
+dotenv.config({ path: envPath });
 
+const CLIENT_ID = process.env.clientID;
+const tenantID = process.env.tenantID;
+const CLIENT_SECRET = process.env.clientSecret;
+const RESOURCE_ID = process.env.resource;
+const OAUTH_URL = `https://login.microsoftonline.com/{${tenantID}}/oauth2/token`;
 
 
 export const accessToken = async () => {

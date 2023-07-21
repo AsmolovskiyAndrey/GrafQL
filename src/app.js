@@ -1,27 +1,14 @@
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import {setContext} from "apollo-link-context";
 import gql from "graphql-tag";
 import fetch from "node-fetch";
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import pkg from '@apollo/client';
-// import { log } from 'console';
+import { accessToken, authMiddleware } from "../middleware/authMiddleware.js";
 
 const { ApolloClient, InMemoryCache, ApolloLink, HttpLink } = pkg;
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const envPath = path.resolve(__dirname, '../.env');
-dotenv.config({ path: envPath });
 
+const HOSTNAME = "https://graphql-sandbox-dds.rnv-online.de";
 
-const CLIENT_ID = process.env.clientID;
-const tenantID = process.env.tenantID;
-const CLIENT_SECRET = process.env.clientSecret;
-const RESOURCE_ID = process.env.resource;
-const HOSTNAME = process.env.hostname;
-const OAUTH_URL = `https://login.microsoftonline.com/{${tenantID}}/oauth2/token`;
 
 const typeDefs = `#graphql
     type Query {
@@ -49,43 +36,11 @@ const typeDefs = `#graphql
     }
 `;
 
-// const accessToken = async () => {
-//     const promise = new Promise(async (resolve, reject) => {
-//         const response = await fetch(OAUTH_URL, {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/x-www-form-urlencoded",
-//         },
-//         body: `grant_type=client_credentials
-//             &client_id=${CLIENT_ID}
-//             &client_secret=${CLIENT_SECRET}
-//             &resource=${RESOURCE_ID}`,
-//         });
-
-//         resolve(response.json());
-//     });
-
-//     const json = await promise;
-//     return json["access_token"];
-// };
-
 const httpLink = new HttpLink({
     uri: HOSTNAME,
     credentials: "same-origin",
     fetch: fetch,
 });
-
-// const authMiddleware = setContext(
-//     (request) =>
-//         new Promise(async (resolve, reject) => {
-//         const token = await accessToken();
-//         resolve({
-//             headers: {
-//             authorization: `Bearer ${token}`,
-//             },
-//         });
-//     })
-// );
 
 const client = new ApolloClient({
     link: ApolloLink.from([authMiddleware, httpLink]),
