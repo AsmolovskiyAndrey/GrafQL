@@ -29,10 +29,10 @@ const OAUTH_URL = `https://login.microsoftonline.com/{${tenantID}}/oauth2/token`
 
 const typeDefs = `#graphql
     type Query {
-    token: String
-    station: stationWithId
-    stations: stationsNearby
-    }
+        token: String
+        station(id: ID): stationWithId
+        stations: stationsNearby
+        }
 
     type stationWithId {
         hafasID: ID,
@@ -113,17 +113,17 @@ const getStationNotWarAway = () => client.query({
         `,
 }).then((result) => (result["data"]));
 
-const getStationWithId = (sendingId) => client.query({
+const getStationWithId = (myId) => client.query({
     query: gql`
         query {
-            station(id:"2471") {
+            station(id: "2474") {
                 hafasID
                 longName
                 shortName
                 name
         } }
     `,
-}).then(result => (result["data"]));
+}).then(result => result["data"]).then(console.log(myId));
 
 const resolvers = {
     Query: {
@@ -131,8 +131,9 @@ const resolvers = {
             const tokenAccess = await accessToken();
             return tokenAccess;
         },
-        station: async () => {
-            const stationId = await Object(getStationWithId());
+        station: async (parent, args) => {
+            const stationId = await Object(getStationWithId(args.id));
+            // console.log(args.id);
             console.log(stationId.station);
             return stationId.station
         },
