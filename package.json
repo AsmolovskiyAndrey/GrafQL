@@ -12,14 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@apollo/server": "^4.7.5",
-    "apollo-cache-inmemory": "^1.6.6",
-    "apollo-client": "^2.6.10",
-    "apollo-link": "^1.2.14",
+    "@apollo/client": "^3.7.17",
+    "@apollo/server": "^4.8.0",
     "apollo-link-context": "^1.0.20",
-    "apollo-link-http": "^1.5.17",
     "dotenv": "^16.3.1",
-    "graphql-tag": "^2.12.6"
+    "graphql-tag": "^2.12.6",
+    "react": "^18.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"

@@ -2,22 +2,26 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import {InMemoryCache} from "apollo-cache-inmemory";
-import {HttpLink} from "apollo-link-http";
-import {ApolloLink} from "apollo-link";
+// import {InMemoryCache} from "apollo-cache-inmemory";
+// import {HttpLink} from "apollo-link-http";
+// import {ApolloLink} from "apollo-link";
 import {setContext} from "apollo-link-context";
+// import { setContext } from "@apollo/client/link/context";
 import gql from "graphql-tag";
 import fetch from "node-fetch";
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import pkg from "apollo-client";
+// import pkg from "apollo-client";
+import pkg from '@apollo/client';
+// import { ApolloClient, InMemoryCache, ApolloLink, HttpLink } from '@apollo/client'
 import { log } from 'console';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const envPath = path.resolve(__dirname, '../.env');
 dotenv.config({ path: envPath });
-const {ApolloClient} = pkg;
+// import pkg from '@apollo/client';
+const { ApolloClient, InMemoryCache, ApolloLink, HttpLink } = pkg;
 
 const CLIENT_ID = process.env.clientID;
 const tenantID = process.env.tenantID;
