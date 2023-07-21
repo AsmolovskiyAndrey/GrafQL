@@ -1,4 +1,8 @@
-import {} from 'dotenv/config'
+// import {} from 'dotenv/config'
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 import {InMemoryCache} from "apollo-cache-inmemory";
 import {HttpLink} from "apollo-link-http";
 import {ApolloLink} from "apollo-link";
@@ -8,7 +12,12 @@ import fetch from "node-fetch";
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import pkg from "apollo-client";
+import { log } from 'console';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const envPath = path.resolve(__dirname, '../.env');
+dotenv.config({ path: envPath });
 const {ApolloClient} = pkg;
 
 const CLIENT_ID = process.env.clientID;
@@ -21,28 +30,28 @@ const OAUTH_URL = `https://login.microsoftonline.com/{${tenantID}}/oauth2/token`
 const typeDefs = `#graphql
     type Query {
     token: String
-    station: [Link]
+    station: stationWithId
+    stations: stationsNearby
     }
 
-    type Link {
-        hafasID: String,
+    type stationWithId {
+        hafasID: ID,
         longName: String,
         shortName: String,
         name: String,
     }
-`;
 
-//-----
-// stationWithId: {
-//     station: {
-//         hafasID: String,
-//         longName: String,
-//         shortName: String,
-//         name: String,
-//         __typename: String,
-//     }
-// }
-//------
+    type stationsNearby {
+        totalCount: Int,
+        elements:[stationsInfo]
+    }
+
+    type stationsInfo {
+        hafasID: String,
+        globalID: String,
+        longName: String,
+    }
+`;
 
 const accessToken = async () => {
     const promise = new Promise(async (resolve, reject) => {
@@ -104,7 +113,7 @@ const getStationNotWarAway = () => client.query({
         `,
 }).then((result) => (result["data"]));
 
-const getStationWithId = () => client.query({
+const getStationWithId = (sendingId) => client.query({
     query: gql`
         query {
             station(id:"2471") {
@@ -124,24 +133,14 @@ const resolvers = {
         },
         station: async () => {
             const stationId = await Object(getStationWithId());
-            const myArray = [];
-            myArray.push(stationId)
-            console.log(myArray);
-            return myArray
-
-            // const meinResolve = [{
-            //     station: {
-            //         hafasID: '2471',
-            //         longName: 'Universität',
-            //         shortName: 'MIUN',
-            //         name: 'Universität',
-            //         __typename: 'Station'
-            //     }
-            // }];
-            // console.log(meinResolve[0]);
-            // return meinResolve[0]
+            console.log(stationId.station);
+            return stationId.station
+        },
+        stations: async () => {
+            const stationNotWar = await Object(getStationNotWarAway());
+            // console.log(stationNotWar);
+            return stationNotWar.stations
         }
-        
     },
     };
 
