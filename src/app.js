@@ -1,27 +1,20 @@
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-// import {InMemoryCache} from "apollo-cache-inmemory";
-// import {HttpLink} from "apollo-link-http";
-// import {ApolloLink} from "apollo-link";
 import {setContext} from "apollo-link-context";
-// import { setContext } from "@apollo/client/link/context";
 import gql from "graphql-tag";
 import fetch from "node-fetch";
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-// import pkg from "apollo-client";
 import pkg from '@apollo/client';
-// import { ApolloClient, InMemoryCache, ApolloLink, HttpLink } from '@apollo/client'
-import { log } from 'console';
+// import { log } from 'console';
 
+const { ApolloClient, InMemoryCache, ApolloLink, HttpLink } = pkg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const envPath = path.resolve(__dirname, '../.env');
 dotenv.config({ path: envPath });
-// import pkg from '@apollo/client';
-const { ApolloClient, InMemoryCache, ApolloLink, HttpLink } = pkg;
+
 
 const CLIENT_ID = process.env.clientID;
 const tenantID = process.env.tenantID;
@@ -56,25 +49,25 @@ const typeDefs = `#graphql
     }
 `;
 
-const accessToken = async () => {
-    const promise = new Promise(async (resolve, reject) => {
-        const response = await fetch(OAUTH_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `grant_type=client_credentials
-            &client_id=${CLIENT_ID}
-            &client_secret=${CLIENT_SECRET}
-            &resource=${RESOURCE_ID}`,
-        });
+// const accessToken = async () => {
+//     const promise = new Promise(async (resolve, reject) => {
+//         const response = await fetch(OAUTH_URL, {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/x-www-form-urlencoded",
+//         },
+//         body: `grant_type=client_credentials
+//             &client_id=${CLIENT_ID}
+//             &client_secret=${CLIENT_SECRET}
+//             &resource=${RESOURCE_ID}`,
+//         });
 
-        resolve(response.json());
-    });
+//         resolve(response.json());
+//     });
 
-    const json = await promise;
-    return json["access_token"];
-};
+//     const json = await promise;
+//     return json["access_token"];
+// };
 
 const httpLink = new HttpLink({
     uri: HOSTNAME,
@@ -82,17 +75,17 @@ const httpLink = new HttpLink({
     fetch: fetch,
 });
 
-const authMiddleware = setContext(
-    (request) =>
-        new Promise(async (resolve, reject) => {
-        const token = await accessToken();
-        resolve({
-            headers: {
-            authorization: `Bearer ${token}`,
-            },
-        });
-    })
-);
+// const authMiddleware = setContext(
+//     (request) =>
+//         new Promise(async (resolve, reject) => {
+//         const token = await accessToken();
+//         resolve({
+//             headers: {
+//             authorization: `Bearer ${token}`,
+//             },
+//         });
+//     })
+// );
 
 const client = new ApolloClient({
     link: ApolloLink.from([authMiddleware, httpLink]),
@@ -136,13 +129,10 @@ const resolvers = {
         },
         station: async (parent, args) => {
             const stationId = await Object(getStationWithId(args.id));
-            // console.log(args.id);
-            // console.log(stationId.station);
             return stationId.station
         },
         stations: async () => {
             const stationNotWar = await Object(getStationNotWarAway());
-            // console.log(stationNotWar);
             return stationNotWar.stations
         }
     },
