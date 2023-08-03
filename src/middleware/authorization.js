@@ -56,5 +56,7 @@ const httpLink = new HttpLink({
 
 export const client = new ApolloClient({
     link: ApolloLink.from([authMiddleware, httpLink]),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+        // addTypename: false
+    }),
 });
